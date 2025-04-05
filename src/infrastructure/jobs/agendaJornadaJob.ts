@@ -1,34 +1,47 @@
-// src/infrastructure/jobs/agendaJornadaJob.ts
-import { IJornadaModel } from "../../domain/schemas/jornadaSchema";
-import { IColaboradorModel } from "../../domain/schemas/colaboradorSchema";
-import { acaoQueue } from "../../queue";
+import { Request, Response, NextFunction } from "express";
+import { AssociarJornadaUseCase } from "application/usecases/associarJornadaUseCase";
+import { acaoQueue } from "../../queue"; // Importando a fila
+import { CustomError } from "middleware/CustomError";
 
-export const agendarAcoesDaJornada = async (
-  jornada: IJornadaModel,
-  colaborador: IColaboradorModel,
-  dataInicio: Date
-) => {
-  if (!jornada.acoes?.length) return;
+export const associarJornadaController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  try {
+    const { colaboradorId, jornadaId, dataInicio } = req.body;
 
-  for (const acao of jornada.acoes) {
-    const delay = calcularDelay(dataInicio);
+    if (!colaboradorId || !jornadaId || !dataInicio) {
+      return res
+        .status(400)
+        .json({ message: "Todos os campos são obrigatórios." });
+    }
 
-    await acaoQueue.add(
-      {
-        acao: {
-          nome: acao.nome,
-          tipo: acao.tipo,
-          payload: acao.payload,
-        },
-        colaboradorEmail: colaborador.email,
-      },
-      { delay }
-    );
+    const useCase = new AssociarJornadaUseCase();
+    const associacao = await useCase.execute({
+      colaboradorId,
+      jornadaId,
+      dataInicio: new Date(dataInicio),
+    });
+
+    // Adicionando o job à fila
+    await acaoQueue.add({
+      colaboradorId,
+      jornadaId,
+      dataInicio,
+    });
+
+    return res.status(201).json({
+      message: "Jornada associada com sucesso.",
+      data: associacao,
+    });
+  } catch (error) {
+    console.error("Erro ao associar jornada:", error);
+
+    if (error instanceof CustomError) {
+      return next(error);
+    }
+
+    return next(new CustomError("Erro interno do servidor.", 500));
   }
 };
-
-function calcularDelay(dataInicio: Date): number {
-  const agora = Date.now();
-  const inicio = new Date(dataInicio).getTime();
-  return Math.max(inicio - agora, 0);
-}

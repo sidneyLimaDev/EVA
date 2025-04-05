@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { AssociarJornadaUseCase } from "application/usecases/associarJornadaUseCase";
-import { CustomError } from "middleware/CustomError"; // Certifique-se de importar o CustomError
+import { CustomError } from "middleware/CustomError";
+import { acaoQueue } from "../../../queue"; // Importando a fila de jobs
 
 export const associarJornadaController = async (
   req: Request,
   res: Response,
-  next: NextFunction // Adicionando o next como parâmetro
+  next: NextFunction
 ): Promise<any> => {
   try {
     const { colaboradorId, jornadaId, dataInicio } = req.body;
@@ -23,19 +24,26 @@ export const associarJornadaController = async (
       dataInicio: new Date(dataInicio),
     });
 
+    // Adicionando o job à fila após a associação
+    await acaoQueue.add({
+      acao: {
+        nome: "Ação de Boas-vindas",
+        tipo: "email",
+        payload: `Olá, ${colaboradorId}, você foi associado à jornada ${jornadaId}!`,
+      },
+      colaboradorEmail: "teste@email.com", // Aqui vamos substituir pelo email real
+    });
+
     return res.status(201).json({
-      message: "Jornada associada com sucesso.",
+      message: "Jornada associada com sucesso e job de boas-vindas adicionado.",
       data: associacao,
     });
   } catch (error) {
     console.error("Erro ao associar jornada:", error);
 
-    // Verifica se é um CustomError e passa para o middleware de erro
     if (error instanceof CustomError) {
-      return next(error); // Passa o erro para o middleware de erro
+      return next(error);
     }
-
-    // Para erros não previstos
     return next(new CustomError("Erro interno do servidor.", 500));
   }
 };
