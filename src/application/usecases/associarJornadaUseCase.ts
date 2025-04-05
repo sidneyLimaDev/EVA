@@ -1,7 +1,10 @@
+// src/application/usecases/associarJornadaUseCase.ts
+
 import Colaborador from "../../domain/schemas/colaboradorSchema";
 import Jornada from "../../domain/schemas/jornadaSchema";
 import Associacao from "../../domain/schemas/associacaoSchema";
 import { Types } from "mongoose";
+import { CustomError } from "middleware/CustomError";
 
 interface AssociarJornadaInput {
   colaboradorId: string;
@@ -19,21 +22,27 @@ export class AssociarJornadaUseCase {
     const isValidId = Types.ObjectId.isValid(colaboradorId);
     console.log("✅ ID é válido?", isValidId);
     if (!isValidId) {
-      throw new Error("ID de colaborador inválido.");
+      throw new CustomError("ID de colaborador inválido.", 400);
     }
 
     const colaborador = await Colaborador.findById(colaboradorId);
-    // 1. Verifica se o colaborador existe
     if (!colaborador) {
-      throw new Error("Colaborador não encontrado.");
-    }
-    // 2. Verifica se a jornada existe
-    const jornada = await Jornada.findById(jornadaId).populate("acoes");
-    if (!jornada) {
-      throw new Error("Jornada não encontrada.");
+      throw new CustomError("Colaborador não encontrado.", 404);
     }
 
-    // 3. Cria a associação
+    const jornada = await Jornada.findById(jornadaId).populate("acoes");
+    if (!jornada) {
+      throw new CustomError("Jornada não encontrada.", 404);
+    }
+
+    const associacaoExistente = await Associacao.findOne({
+      colaborador: colaboradorId,
+      jornada: jornadaId,
+    });
+    if (associacaoExistente) {
+      throw new CustomError("Jornada já associada a este colaborador.", 409);
+    }
+
     const associacao = await Associacao.create({
       colaborador: new Types.ObjectId(colaboradorId),
       jornada: new Types.ObjectId(jornadaId),
