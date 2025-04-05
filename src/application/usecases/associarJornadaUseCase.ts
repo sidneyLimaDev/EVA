@@ -4,7 +4,7 @@ import Colaborador from "../../domain/schemas/colaboradorSchema";
 import Jornada from "../../domain/schemas/jornadaSchema";
 import Associacao from "../../domain/schemas/associacaoSchema";
 import { Types } from "mongoose";
-import { CustomError } from "middleware/CustomError";
+import { CustomError } from "./../../middleware/CustomError";
 
 interface AssociarJornadaInput {
   colaboradorId: string;

@@ -32,7 +32,7 @@ export const associarJornadaController = async (
 
     // Verifica se é um CustomError e passa para o middleware de erro
     if (error instanceof CustomError) {
-      return res.status(error.statusCode).json({ message: error.message });
+      return next(error); // Passa o erro para o middleware de erro
     }
 
     // Para erros não previstos
