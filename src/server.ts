@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { errorMiddleware } from "./middleware/errorMiddleware";
 import associacaoRoutes from "./interfaces/http/routes/associacaoRoutes";
 import colaboradorRoutes from "./interfaces/http/routes/colaboradorRoutes";
+import acaoRoutes from "./interfaces/http/routes/acaoRoutes";
 import jornadaRoutes from "./interfaces/http/routes/JornadaRoutes";
 import "./infrastructure/jobs/acaoProcessor";
 import "./domain/schemas/acaoSchema";
@@ -31,6 +32,7 @@ app.use(express.json());
 app.use("/api/associacoes", associacaoRoutes);
 app.use("/api/colaboradores", colaboradorRoutes);
 app.use("/api/jornadas", jornadaRoutes);
+app.use("/api/acoes", acaoRoutes);
 
 // Middleware de erro
 app.use(errorMiddleware);
