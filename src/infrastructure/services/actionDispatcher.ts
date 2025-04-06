@@ -6,8 +6,4 @@ export const dispatchAcao = async (
 ) => {
   console.log(`🎯 Disparando ação [${acao.tipo}] para ${colaboradorEmail}`);
   console.log(`📨 Conteúdo: ${acao.payload}`);
-
-  // Aqui futuramente você pode colocar:
-  // - nodemailer (email)
-  // - API do WhatsApp (ex: Twilio, Z-API etc)
 };

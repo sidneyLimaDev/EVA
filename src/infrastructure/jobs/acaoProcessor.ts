@@ -1,5 +1,3 @@
-// src/infrastructure/jobs/acaoProcessor.ts
-
 import { acaoQueue } from "../../queue";
 import { Job } from "bull";
 import nodemailer from "nodemailer";
