@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { errorMiddleware } from "./middleware/errorMiddleware";
 import associacaoRoutes from "./interfaces/http/routes/associacaoRoutes";
 import colaboradorRoutes from "./interfaces/http/routes/colaboradorRoutes";
+import jornadaRoutes from "./interfaces/http/routes/JornadaRoutes";
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.use(express.json());
 // Rotas
 app.use("/api/associacoes", associacaoRoutes);
 app.use("/api/colaboradores", colaboradorRoutes);
+app.use("/api/jornadas", jornadaRoutes);
 
 // Middleware de erro
 app.use(errorMiddleware);

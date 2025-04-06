@@ -13,4 +13,7 @@ const AssociacaoSchema = new Schema<IAssociacaoModel>({
   dataInicio: { type: Date, required: true },
 });
 
-export default mongoose.model<IAssociacaoModel>("Associacao", AssociacaoSchema);
+export default mongoose.model<IAssociacaoModel>(
+  "Associacoes",
+  AssociacaoSchema
+);

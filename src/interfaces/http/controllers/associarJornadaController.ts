@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AssociarJornadaUseCase } from "application/usecases/associarJornadaUseCase";
 import { CustomError } from "middleware/CustomError";
-import { acaoQueue } from "../../../queue"; // Importando a fila de jobs
 
 export const associarJornadaController = async (
   req: Request,
@@ -24,18 +23,8 @@ export const associarJornadaController = async (
       dataInicio: new Date(dataInicio),
     });
 
-    // Adicionando o job à fila após a associação
-    await acaoQueue.add({
-      acao: {
-        nome: "Ação de Boas-vindas",
-        tipo: "email",
-        payload: `Olá, ${colaboradorId}, você foi associado à jornada ${jornadaId}!`,
-      },
-      colaboradorEmail: "teste@email.com", // Aqui vamos substituir pelo email real
-    });
-
     return res.status(201).json({
-      message: "Jornada associada com sucesso e job de boas-vindas adicionado.",
+      message: "Jornada associada com sucesso.",
       data: associacao,
     });
   } catch (error) {
