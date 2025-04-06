@@ -3,6 +3,6 @@ import { associarJornadaController } from "../controllers/associarJornadaControl
 
 const router = Router();
 
-router.post("/associacoes", associarJornadaController);
+router.post("/", associarJornadaController);
 
 export default router;
