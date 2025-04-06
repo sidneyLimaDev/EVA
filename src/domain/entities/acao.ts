@@ -2,5 +2,5 @@ export interface AcaoEntity {
   title: string;
   description: string;
   tipo: "email" | "whatsapp";
-  payload: string;
+  payload: number;
 }

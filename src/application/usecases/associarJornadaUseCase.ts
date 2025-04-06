@@ -1,3 +1,5 @@
+// src/application/usecases/associarJornadaUseCase.ts
+
 import Colaborador from "../../domain/schemas/colaboradorSchema";
 import Jornada from "../../domain/schemas/jornadaSchema";
 import Associacao from "../../domain/schemas/associacaoSchema";
@@ -47,27 +49,32 @@ export class AssociarJornadaUseCase {
     });
 
     // Agendar ações da jornada
-    const acoes = jornada.acoes as any[]; // Tipagem simples por enquanto
-    console.log("🔎 Ações populadas:", jornada.acoes);
-    console.log("✅ Tipo da primeira ação:", typeof jornada.acoes[0]);
-
+    const acoes = jornada.acoes as any[];
     for (const acao of acoes) {
-      const delayEmMs = new Date(acao.tempo).getTime(); // tempo relativo
-      console.log("⏳ Ação:", acao.titulo, "com tempo:", delayEmMs);
-      console.log("teste");
+      const delayEmMs = Number(acao.payload) * 1000; // payload é string, multiplica pra ms
       const dataExecucao =
         new Date(dataInicio).getTime() + delayEmMs - Date.now();
-      console.log("⏳ Agendando ação para:", colaborador.email, acao.titulo);
+
+      console.log(
+        "⏳ Agendando:",
+        acao.title,
+        "Tipo:",
+        acao.tipo,
+        "Delay:",
+        dataExecucao
+      );
+
       await acaoQueue.add(
         {
           colaboradorEmail: colaborador.email,
-          acaoDescricao: acao.descricao,
-          acaoTitulo: acao.titulo,
+          acaoDescricao: acao.description,
+          acaoTitulo: acao.title,
           nomeColaborador: colaborador.nome,
           cargoColaborador: colaborador.cargo,
+          tipo: acao.tipo,
         },
         {
-          delay: 0,
+          delay: dataExecucao,
           attempts: 3,
         }
       );

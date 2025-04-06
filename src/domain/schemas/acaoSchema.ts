@@ -7,7 +7,7 @@ const AcaoSchema = new Schema<IAcaoModel>({
   title: { type: String, required: true },
   description: { type: String, required: true },
   tipo: { type: String, enum: ["email", "whatsapp"], required: true },
-  payload: { type: String, required: true },
+  payload: { type: Number, required: true },
 });
 
 export default mongoose.model<IAcaoModel>("Acao", AcaoSchema);
