@@ -1,5 +1,3 @@
-// src/interfaces/http/routes/colaboradorRoutes.ts
-
 import { Router } from "express";
 import {
   criarColaboradorController,

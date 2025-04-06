@@ -1,9 +1,18 @@
-// src/interfaces/http/routes/jornadaRoutes.ts
 import { Router } from "express";
-import { criarJornadaController } from "../controllers/criarJornadaController";
+import {
+  criarJornadaController,
+  listarJornadasController,
+  buscarJornadaController,
+  atualizarJornadaController,
+  deletarJornadaController,
+} from "../controllers/jornadaController";
 
-const jornadaRoutes = Router();
+const router = Router();
 
-jornadaRoutes.post("/", criarJornadaController);
+router.post("/", criarJornadaController);
+router.get("/", listarJornadasController);
+router.get("/:id", buscarJornadaController);
+router.put("/:id", atualizarJornadaController);
+router.delete("/:id", deletarJornadaController);
 
-export default jornadaRoutes;
+export default router;
