@@ -64,3 +64,8 @@ npm run dev
 # Rodar testes
 npm run test
 ```
+<<<<<<< HEAD
+=======
+
+Uma breve descrição sobre o que esse projeto faz e para quem ele é
+>>>>>>> b29debccb32f9064839d46c8f29b22b7db645907
