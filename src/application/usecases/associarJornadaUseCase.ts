@@ -1,10 +1,9 @@
-// src/application/usecases/associarJornadaUseCase.ts
-
 import Colaborador from "../../domain/schemas/colaboradorSchema";
 import Jornada from "../../domain/schemas/jornadaSchema";
 import Associacao from "../../domain/schemas/associacaoSchema";
 import { Types } from "mongoose";
-import { CustomError } from "./../../middleware/CustomError";
+import { CustomError } from "../../middleware/CustomError";
+import { acaoQueue } from "../../queue";
 
 interface AssociarJornadaInput {
   colaboradorId: string;
@@ -18,9 +17,7 @@ export class AssociarJornadaUseCase {
     jornadaId,
     dataInicio,
   }: AssociarJornadaInput) {
-    console.log("🔍 ID do colaborador recebido:", colaboradorId);
     const isValidId = Types.ObjectId.isValid(colaboradorId);
-    console.log("✅ ID é válido?", isValidId);
     if (!isValidId) {
       throw new CustomError("ID de colaborador inválido.", 400);
     }
@@ -48,6 +45,31 @@ export class AssociarJornadaUseCase {
       jornada: new Types.ObjectId(jornadaId),
       dataInicio: dataInicio,
     });
+
+    // Agendar ações da jornada
+    const acoes = jornada.acoes as any[]; // Tipagem simples por enquanto
+    console.log("🔎 Ações populadas:", jornada.acoes);
+    console.log("✅ Tipo da primeira ação:", typeof jornada.acoes[0]);
+
+    for (const acao of acoes) {
+      const delayEmMs = new Date(acao.tempo).getTime(); // tempo relativo
+      console.log("⏳ Ação:", acao.titulo, "com tempo:", delayEmMs);
+      console.log("teste");
+      const dataExecucao =
+        new Date(dataInicio).getTime() + delayEmMs - Date.now();
+      console.log("⏳ Agendando ação para:", colaborador.email, acao.titulo);
+      await acaoQueue.add(
+        {
+          colaboradorEmail: colaborador.email,
+          acaoDescricao: acao.descricao,
+          acaoTitulo: acao.titulo,
+        },
+        {
+          delay: 0,
+          attempts: 3,
+        }
+      );
+    }
 
     return associacao;
   }

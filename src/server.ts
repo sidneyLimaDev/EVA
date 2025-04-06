@@ -5,6 +5,9 @@ import { errorMiddleware } from "./middleware/errorMiddleware";
 import associacaoRoutes from "./interfaces/http/routes/associacaoRoutes";
 import colaboradorRoutes from "./interfaces/http/routes/colaboradorRoutes";
 import jornadaRoutes from "./interfaces/http/routes/JornadaRoutes";
+import "./infrastructure/jobs/acaoProcessor";
+import "./domain/schemas/acaoSchema";
+import "./domain/schemas/jornadaSchema";
 
 dotenv.config();
 
