@@ -23,13 +23,13 @@ async function iniciarProcessador() {
     try {
       console.log("📩 Processando job", job.id);
 
-      const { colaboradorEmail, acaoDescricao, acaoTitulo } = job.data;
+      const { colaboradorEmail, nomeColaborador, cargoColaborador } = job.data;
 
       const mailOptions = {
         from: '"Equipe Eva" <noreply@eva.com>',
         to: colaboradorEmail,
-        subject: `Nova ação: ${acaoTitulo}`,
-        text: acaoDescricao,
+        subject: "Bem-vindo à jornada",
+        text: `Olá ${nomeColaborador}, seja muito bem-vindo! Daremos início à sua nova fase no cargo de ${cargoColaborador}.`,
       };
 
       const info = await transporter.sendMail(mailOptions);

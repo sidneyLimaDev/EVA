@@ -63,6 +63,8 @@ export class AssociarJornadaUseCase {
           colaboradorEmail: colaborador.email,
           acaoDescricao: acao.descricao,
           acaoTitulo: acao.titulo,
+          nomeColaborador: colaborador.nome,
+          cargoColaborador: colaborador.cargo,
         },
         {
           delay: 0,
