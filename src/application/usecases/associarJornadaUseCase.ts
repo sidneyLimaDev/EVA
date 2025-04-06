@@ -1,5 +1,3 @@
-// src/application/usecases/associarJornadaUseCase.ts
-
 import Colaborador from "../../domain/schemas/colaboradorSchema";
 import Jornada from "../../domain/schemas/jornadaSchema";
 import Associacao from "../../domain/schemas/associacaoSchema";
