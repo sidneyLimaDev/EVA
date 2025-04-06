@@ -62,3 +62,5 @@ npm run dev
 # Rodar testes
 npm run test
 ```
+## 🃏 Collection
+Busque o arquivo `EVA.har` e adicione na sua ferramenta de interação com API.
